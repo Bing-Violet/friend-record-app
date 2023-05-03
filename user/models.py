@@ -32,6 +32,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     UID = models.CharField(max_length=255, default=uuid4, primary_key=True, unique=True, editable=False)
     username = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
+    thumbnail = models.ImageField(blank=True, null=True, default='default.png')
+
     created_on = models.DateTimeField(auto_now_add=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
