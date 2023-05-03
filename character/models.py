@@ -2,7 +2,6 @@ from django.db import models
 
 from user.models import User
 
-from uuid import uuid4
 from datetime import timezone
 import datetime
 
