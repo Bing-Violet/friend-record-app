@@ -1,43 +1,20 @@
 from django.shortcuts import render
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+
+from rest_framework import generics
+
+from .serializers import UserCreateSerializer
+from .models import User
+
+class UserCreateApi(generics.CreateAPIView):
+    serializer_class = UserCreateSerializer
+    queryset = User.objects.all()
 
 
-from uuid import uuid4
-from datetime import timezone
+class UserListApi(generics.ListAPIView):
+    serializer_class = UserCreateSerializer
+    queryset = User.objects.all()
 
-class UserManager(BaseUserManager):
-    def create_user(self, username, email, password=None):
-        print("CU", self)
-        if not email:
-            raise ValueError('email is required')
-        
-        email = self.normalize_email(email)
-        user = self.model(username=username, email=email)
-        user.last_login = datetime.datetime.now() 
-
-        user.set_password(password)
-        user.save(using=self._db)
-        
-        return user
-
-    def create_superuser(self, username, email, password):
-        user = self.create_user(username, email, password)
-        user.is_superuser = True
-        user.save(using=self._db)
-
-        return user
-
-class User(AbstractBaseUser, PermissionsMixin):
-    UID = models.CharField(max_length=255, default=uuid4, primary_key=True, unique=True, editable=False)
-    username = models.CharField(max_length=20)
-    email = models.EmailField(unique=True)
-    created_on = models.DateTimeField(auto_now_add=True, blank=True)
-
-    objects = UserManager()
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-
-    class Meta:
-        ordering = ['-created_on',]
+class UserDetailApi(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserCreateSerializer
+    queryset = User.objects.all()
+    lookup_field = 'UID'
