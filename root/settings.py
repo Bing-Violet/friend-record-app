@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'debug_toolbar',
 
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth', #not using now.
+    'corsheaders',
+    'rest_framework_simplejwt',
 
     'user',
     'event',
@@ -52,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -80,7 +85,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'root.wsgi.application'
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000"
+]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer','JWT'),
+    'SIGNING_KEY': SECRET_KEY,
+    # 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=5),
+    # 'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
+    'ROTATE_REFRESH_TOKENS' : True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+    'USER_ID_FIELD': 'UID',
+    'USER_ID_CLAIM': 'user_id'
+}
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
