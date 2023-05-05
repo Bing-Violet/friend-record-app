@@ -22,9 +22,6 @@ def get_tokens_for_user(user):
         'access_token': str(refresh.access_token),
     }
 
-# class UserCreateApi(generics.CreateAPIView):
-#     serializer_class = UserCreateSerializer
-#     queryset = User.objects.all()
 
 class UserCreateApi(APIView):
     def post(self, request, format=None):
@@ -43,8 +40,8 @@ class UserLoginApi(APIView):
             tokens = get_tokens_for_user(user)
             serializer = UserCreateSerializer(user)
             return JsonResponse({"user":serializer.data, "tokens":tokens}, status=200)
-        except:
-            return Http404
+        except User.DoesNotExist as e:
+            raise Http404
 
 
 class UserListApi(generics.ListAPIView):
