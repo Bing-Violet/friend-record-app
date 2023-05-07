@@ -11,7 +11,7 @@ class Character(models.Model):
     user = models.ForeignKey(User, related_name='character', default=None, on_delete=models.CASCADE)
     sum = models.IntegerField(default=0)
     thumbnail = models.ImageField(blank=True, null=True, default='default.png')
-    last_log = models.DateTimeField(auto_now_add=True, blank=True)
+    last_log = models.DateTimeField(default=datetime.datetime.now(), blank=True)
     created_on = models.DateTimeField(auto_now_add=True, blank=True)
 
 

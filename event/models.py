@@ -15,7 +15,7 @@ class Event(models.Model):
     money = models.IntegerField(default=0)
     created_on = models.DateTimeField(auto_now_add=True, blank=True)
     class Meta:
-        ordering = ['-money',]
+        ordering = ['-created_on',]
 
 
 @receiver(post_save, sender=Event)
