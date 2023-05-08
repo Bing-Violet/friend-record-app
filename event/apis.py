@@ -31,3 +31,17 @@ class EventDetailApi(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EventCreateSerializer
     queryset = Event.objects.all()
     lookup_field = 'id'
+
+    def perform_update(self, serializer):
+        pre_instance = self.get_object()  # instance before update
+        instance = serializer.save()
+        diff_money = instance.money - pre_instance.money
+        character = Character.objects.get(id=instance.character.id)
+        character.sum += diff_money
+        character.save()
+
+    def perform_destroy(self, instance):
+        character = Character.objects.get(id=instance.character.id)
+        character.sum -= instance.money
+        instance.delete()
+        character.save()  
