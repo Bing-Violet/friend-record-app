@@ -23,8 +23,8 @@ FRONT_ORIGIN = env('FRONT_ORIGIN')
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p!*maifz7$a2470ysi67(_^l&q-vt$@w5((^7hyn5l^a3e8%gg'
-
+SECRET_KEY = env('SECRET_KEY')
+JWF_SECRET_KEY = env('JWF_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'dj_rest_auth', #not using now.
     'corsheaders',
     'rest_framework_simplejwt',
+    'django_nextjs',
 
     'user',
     'event',
@@ -57,7 +58,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'root.middlewares.JWTAuthenticationMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -98,7 +98,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
 

@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/user/',include('user.urls')),
     path('api/character/',include('character.urls')),
     path('api/event/',include('event.urls')),
+    # path("", include("django_nextjs.urls")),
 ]
 
 if settings.DEBUG:

@@ -13,7 +13,7 @@ class UserManager(BaseUserManager):
         
         email = self.normalize_email(email)
         user = self.model(username=username, email=email)
-        # user.last_login = datetime.datetime.now() 
+        user.last_login = datetime.datetime.now() 
         user.set_password(password)
         user.save(using=self._db)
         
