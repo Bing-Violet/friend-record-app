@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import JsonResponse
 
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -7,6 +9,21 @@ from rest_framework.response import Response
 from .serializers import EventCreateSerializer
 from .models import Event
 from character.models import Character
+
+class OwnerOnlyRestriction(UserPassesTestMixin):
+    '''
+    restriction of owner user can access the user data
+    '''
+    def test_func(self):
+        print('in_testfun')
+        owner_user = self.request.user
+        object_user = self.get_object()
+        print("owner",owner_user, "object",object_user)
+        verification = True if owner_user.is_staff or owner_user==object_user else False
+        return verification
+    
+    def handle_no_permission(self):
+        return JsonResponse({"info":"not allowed"},status=403)
 
 class EventCreateApi(generics.CreateAPIView):
     serializer_class = EventCreateSerializer
@@ -27,7 +44,7 @@ class EventUserListApi(APIView):
         return Response(serializer.data)
 
 
-class EventDetailApi(generics.RetrieveUpdateDestroyAPIView):
+class EventDetailApi(OwnerOnlyRestriction, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EventCreateSerializer
     queryset = Event.objects.all()
     lookup_field = 'id'

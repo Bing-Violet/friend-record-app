@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate
 from django.http import Http404
 from django.db import IntegrityError
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 from rest_framework import generics
@@ -27,6 +28,21 @@ def get_tokens_for_user(user):
         'access_token': str(refresh.access_token),
     }
 
+class OwnerOnlyRestriction(UserPassesTestMixin):
+    '''
+    restriction of owner user can access the user data
+    '''
+    def test_func(self):
+        owner_user = self.request.user
+        object_user = self.get_object()
+        print("owner",owner_user, "object",object_user)
+        verification = True if owner_user.is_staff or owner_user==object_user else False
+        return verification
+    
+    def handle_no_permission(self):
+        return JsonResponse({"info":"not allowed"},status=403)
+        
+
 class UserCreateApi(APIView):
 
     def post(slef, request, format=None):
@@ -34,8 +50,7 @@ class UserCreateApi(APIView):
         # user.email_verified = False
         user.save()
 
-        token = str(Token.objects.create(user=user))
-        print("token", type(token))
+        token = Token.objects.create(user=user).key
         request_data = {
             "email":user.email,
             "verification_token":token
@@ -69,6 +84,7 @@ class EmailVerify(APIView):
 
 class UserLoginApi(APIView):
     def post(self, request, format=None):
+        print("LI", request.user, request.auth)
         try:
             email = request.data.get('email')
             userExist = User.objects.filter(email=email).exists()
