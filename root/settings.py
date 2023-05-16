@@ -101,11 +101,14 @@ REST_FRAMEWORK = {
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
+# AUTHENTICATION_BACKENDS = (
+#         'django.contrib.auth.backends.ModelBackend',
+#     )
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer','JWT'),
     'SIGNING_KEY': SECRET_KEY,
-    # 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=5), 
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=5), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
     'ROTATE_REFRESH_TOKENS' : True,
     'BLACKLIST_AFTER_ROTATION': True,

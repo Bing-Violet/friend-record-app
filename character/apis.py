@@ -8,7 +8,7 @@ from .serializers import CharacterCreateSerializer, CharacterSerializer
 from .models import Character
 
 class CharacterCreateApi(generics.CreateAPIView):
-    serializer_class = CharacterCreateSerializer
+    serializer_class = CharacterSerializer
     queryset = Character.objects.all()
 
 

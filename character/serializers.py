@@ -3,8 +3,7 @@ from .models import Character
 from event.serializers import EventCreateSerializer
 
 class CharacterSerializer(serializers.ModelSerializer):
-	event = EventCreateSerializer(many=True)
-	
+	event = EventCreateSerializer(many=True, required=False, allow_null=True)
 	class Meta:
 		model = Character
 		fields = [
@@ -16,7 +15,6 @@ class CharacterSerializer(serializers.ModelSerializer):
 			"last_log",
 			"created_on",
 			"event"
-
 		]
 
 class CharacterCreateSerializer(serializers.ModelSerializer):

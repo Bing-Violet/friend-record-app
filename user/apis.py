@@ -89,18 +89,19 @@ class EmailVerify(APIView):
 
 class UserLoginApi(APIView):
     def post(self, request, format=None):
-        print("L", request.user, request.auth)
         try:
             email = request.data.get('email')
             password = request.data.get('password')
             userExist = User.objects.filter(email=email).exists()
-            user = User.objects.get(** request.data)
+            user = authenticate(request, username=email, password=password)
             user.last_login = datetime.datetime.now()
             user.save()
             tokens = get_tokens_for_user(user)
             serializer = UserCreateSerializer(user)
             return JsonResponse({"user":serializer.data, "tokens":tokens}, status=200)
         except User.DoesNotExist:
+            return JsonResponse({'user_exist':True if userExist else False}, status=404)
+        except AttributeError:
             return JsonResponse({'user_exist':True if userExist else False}, status=404)
 
 
@@ -111,9 +112,9 @@ class PasswordChange(APIView):
         print("password-change", password, token)
         try:
             user = User.objects.get(auth_token=token)
-            print(user)
             if not user:
                 return JsonResponse({"password_change":False}, status=404)
+            user.is_active = True
             user.set_password(password)
             user.save()
             auth_token = Token.objects.get(user=user)
@@ -122,7 +123,6 @@ class PasswordChange(APIView):
             serializer = UserCreateSerializer(user)
             return JsonResponse({"password_change":True, "tokens":token,"user":serializer.data}, status=200)
         except Exception as e:
-            print(e)
             return JsonResponse({"password_change":False}, status=404)
 
 
