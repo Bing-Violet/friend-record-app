@@ -14,6 +14,7 @@ class Event(models.Model):
     character = models.ForeignKey(Character, related_name='event', default=None, on_delete=models.CASCADE)
     money = models.IntegerField(default=0)
     created_on = models.DateTimeField(auto_now_add=True, blank=True)
+    icon = models.CharField(max_length=30, default=None, null=True,blank=True)
     class Meta:
         ordering = ['-created_on',]
 

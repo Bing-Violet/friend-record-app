@@ -93,7 +93,7 @@ class UserLoginApi(APIView):
             email = request.data.get('email')
             password = request.data.get('password')
             userExist = User.objects.filter(email=email).exists()
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, username=email, password=password) #user musr be is_active
             user.last_login = datetime.datetime.now()
             user.save()
             tokens = get_tokens_for_user(user)
@@ -101,7 +101,8 @@ class UserLoginApi(APIView):
             return JsonResponse({"user":serializer.data, "tokens":tokens}, status=200)
         except User.DoesNotExist:
             return JsonResponse({'user_exist':True if userExist else False}, status=404)
-        except AttributeError:
+        except AttributeError as e:
+            print("ERROR", e)
             return JsonResponse({'user_exist':True if userExist else False}, status=404)
 
 

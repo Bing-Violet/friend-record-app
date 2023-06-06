@@ -104,7 +104,7 @@ REST_FRAMEWORK = {
 # AUTHENTICATION_BACKENDS = (
 #         'django.contrib.auth.backends.ModelBackend',
 #     )
-
+    
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer','JWT'),
     'SIGNING_KEY': SECRET_KEY,
