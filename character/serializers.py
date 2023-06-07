@@ -12,6 +12,7 @@ class CharacterSerializer(serializers.ModelSerializer):
 			"user",
 			"sum",
 			"thumbnail",
+			"avatar",
 			"last_log",
 			"created_on",
 			"event"
@@ -27,6 +28,7 @@ class CharacterCreateSerializer(serializers.ModelSerializer):
 			"user",
 			"sum",
 			"thumbnail",
+			"avatar",
 			"last_log",
 			"created_on",
 
