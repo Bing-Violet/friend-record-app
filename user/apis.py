@@ -113,8 +113,6 @@ class PasswordChange(APIView):
         print("password-change", password, token)
         try:
             user = User.objects.get(auth_token=token)
-            if not user:
-                return JsonResponse({"password_change":False}, status=404)
             user.is_active = True
             user.set_password(password)
             user.save()
@@ -123,8 +121,11 @@ class PasswordChange(APIView):
             token = get_tokens_for_user(user)
             serializer = UserCreateSerializer(user)
             return JsonResponse({"password_change":True, "tokens":token,"user":serializer.data}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"password_change":False, "message":'no_token_exist'}, status=404)
         except Exception as e:
-            return JsonResponse({"password_change":False}, status=404)
+            print("ERROR", e)
+            return JsonResponse({"password_change":False, "message":'abstract_error'}, status=404)
 
 
 class SendPasswordChange(APIView):
