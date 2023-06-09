@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth import authenticate, login
 
+
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -51,20 +52,25 @@ def get_tokens_for_user(user):
 class UserCreateApi(APIView):
 
     def post(slef, request, format=None):
-        user = User.objects.create_user(**request.data)
-        # user.email_verified = False
-        user.save()
+        try:
+            user = User.objects.create_user(**request.data)
+            # user.email_verified = False
+            user.save()
 
-        token = Token.objects.create(user=user).key
-        request_data = {
-            "email":user.email,
-            "verification_token":token
-        }
-        sender = SendVerificationEmail(request_data)
-        result = sender.send()
-        result["UID"] = user.UID
-        return  JsonResponse(result)
-
+            token = Token.objects.create(user=user).key
+            request_data = {
+                "email":user.email,
+                "verification_token":token
+            }
+            sender = SendVerificationEmail(request_data)
+            result = sender.send()
+            result["UID"] = user.UID
+            return  JsonResponse(result)
+        except IntegrityError as e:
+            print("INT_ERROR",e)
+            return  JsonResponse({'message':"this email is already in use."} ,status=400)
+        except Exception as e:
+             return  JsonResponse({'message':"somethig bad happened."},status=500)
 
 class EmailVerify(APIView):
     # authentication_classes = ([J])
