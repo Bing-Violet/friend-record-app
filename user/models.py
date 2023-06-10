@@ -33,7 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
     thumbnail = models.ImageField(blank=True, null=True, default='default.png')
-
+    avatar = models.CharField(max_length=50, default=None, null=True, blank=True)
     created_on = models.DateTimeField(auto_now_add=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
