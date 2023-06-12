@@ -2,10 +2,9 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
-
+from django.utils import timezone
 from character.models import Character
 
-from datetime import timezone
 import datetime
 
 
@@ -13,7 +12,7 @@ class Event(models.Model):
     name = models.CharField(max_length=30)
     character = models.ForeignKey(Character, related_name='event', default=None, on_delete=models.CASCADE)
     money = models.IntegerField(default=0)
-    created_on = models.DateTimeField(auto_now_add=True, blank=True)
+    created_on = models.DateTimeField(default=timezone.now, blank=True)
     icon = models.CharField(max_length=30, default=None, null=True,blank=True)
     class Meta:
         ordering = ['-created_on',]
