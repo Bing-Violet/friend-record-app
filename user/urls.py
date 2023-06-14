@@ -9,4 +9,5 @@ urlpatterns = [
   path('email-verify/', EmailVerify.as_view()),
   path('send-password-change/', SendPasswordChange.as_view()),
   path('password-change/', PasswordChange.as_view()),
+  # path("", index, name="index"),
   ]

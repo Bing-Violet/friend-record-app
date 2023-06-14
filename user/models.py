@@ -13,7 +13,7 @@ class UserManager(BaseUserManager):
         
         email = self.normalize_email(email)
         user = self.model(username=username, email=email)
-        # user.last_login = datetime.datetime.now() 
+        user.last_login = datetime.datetime.now() 
         user.set_password(password)
         user.save(using=self._db)
         
@@ -23,7 +23,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(username, email, password)
         user.is_staff = True
         user.is_superuser = True
-        # user.is_active = True
+        user.is_active = True
         user.save(using=self._db)
         print("BEFORE RETURN", user.is_staff)
         return user
@@ -33,10 +33,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
     thumbnail = models.ImageField(blank=True, null=True, default='default.png')
-
+    avatar = models.CharField(max_length=50, default=None, null=True, blank=True)
     created_on = models.DateTimeField(auto_now_add=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
     email_verified = models.BooleanField(default=False)
 
     objects = UserManager()

@@ -9,15 +9,17 @@ from rest_framework.response import Response
 from .serializers import EventCreateSerializer
 from .models import Event
 from character.models import Character
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class OwnerOnlyRestriction(UserPassesTestMixin):
     '''
-    restriction of owner user can access the user data
+    restriction of owner user can access the only event datazzz
     '''
     def test_func(self):
         print('in_testfun')
+        # print("HEARDER",self.request.META['AUTH_USER'])
         owner_user = self.request.user
-        object_user = self.get_object()
+        object_user = Character.objects.get(id=self.get_object().character_id).user
         print("owner",owner_user, "object",object_user)
         verification = True if owner_user.is_staff or owner_user==object_user else False
         return verification
@@ -26,6 +28,7 @@ class OwnerOnlyRestriction(UserPassesTestMixin):
         return JsonResponse({"info":"not allowed"},status=403)
 
 class EventCreateApi(generics.CreateAPIView):
+    # authentication_classes = [JWTAuthentication]
     serializer_class = EventCreateSerializer
     queryset = Event.objects.all()
 

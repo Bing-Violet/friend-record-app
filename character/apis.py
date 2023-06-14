@@ -6,9 +6,10 @@ from rest_framework.response import Response
 
 from .serializers import CharacterCreateSerializer, CharacterSerializer
 from .models import Character
+import datetime
 
 class CharacterCreateApi(generics.CreateAPIView):
-    serializer_class = CharacterCreateSerializer
+    serializer_class = CharacterSerializer
     queryset = Character.objects.all()
 
 
@@ -28,3 +29,18 @@ class CharacterDetailApi(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CharacterSerializer
     queryset = Character.objects.all()
     lookup_field = 'id'
+
+
+class CharacterBirthdayUpdateApi(APIView):
+    def post(self, request):
+        print("IN_POST")
+        year = request.data.pop('year')
+        month = request.data.pop('month')
+        day = request.data.pop('day')
+        character_id = request.data.pop('id')
+        print('val check',year, month, day, character_id)
+        character = Character.objects.get(id=character_id)
+        character.birthday = datetime.date(year, month, day)
+        character.save()
+        serializer = CharacterSerializer(character)
+        return Response(serializer.data)
